@@ -224,6 +224,8 @@ SELECT COLUMN_NAME,
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = '001_sales';
 
+
+--- buscar distintos
 SELECT 
     COUNT(*) AS Total_Registros,
     COUNT(DISTINCT Sales_Date) AS Total_Fechas
@@ -253,22 +255,10 @@ SELECT COLUMN_NAME, DATA_TYPE
 FROM INFORMATION_SCHEMA.COLUMNS              
 WHERE TABLE_NAME = '005_cp'
 
-SELECT COLUMN_NAME, DATA_TYPE
-FROM INFORMATION_SCHEMA.COLUMNS              
-WHERE TABLE_NAME = '002_dates'
-
-SELECT COLUMN_NAME, DATA_TYPE
-FROM INFORMATION_SCHEMA.COLUMNS              
-WHERE TABLE_NAME = '002_dates'
-
-SELECT COLUMN_NAME, DATA_TYPE
-FROM INFORMATION_SCHEMA.COLUMNS              
-WHERE TABLE_NAME = '002_dates'
-
 
 
 --- saber si es PK
-SELECTO CountDistinct(Code) from 
+----- SELECTO CountDistinct(Code) from 
 
 ----- numero de filas = numero de codigos
 
