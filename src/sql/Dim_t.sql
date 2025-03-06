@@ -2,7 +2,6 @@
 
 SELECT
     -- cojo todas las fechas o solo las de sales?
-    sales.Sales_Date,
     Anno,
     Annomes,
     Dia,
@@ -18,5 +17,3 @@ SELECT
     [Week]
 FROM    
     [DATAEX].[002_date] AS [date]
-LEFT JOIN
-    [DATAEX].[001_sales] AS sales ON sales.Sales_Date = [date].[Date]
