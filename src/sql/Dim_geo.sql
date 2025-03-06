@@ -13,4 +13,4 @@ FROM
 LEFT JOIN 
     [DATAEX].[012_provincia] provincia ON tienda.PROVINCIA_ID = provincia.PROVINCIA_ID
 LEFT JOIN 
-    [DATAEX].[013_zona] zona ON tienda.ZONA_ID = zona.ZONA_ID
+    [DATAEX].[013_zona] zona ON tienda.ZONA_ID = zona.ZONA_ID 
