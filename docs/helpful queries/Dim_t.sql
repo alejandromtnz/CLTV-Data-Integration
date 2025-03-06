@@ -12,6 +12,6 @@ SELECT
     Laboral,
     Mes,
     Mes_desc,
-    Week,
+    Week
 FROM    
     [DATAEX].[002_date] AS [date]
