@@ -1,7 +1,7 @@
 -- contruccion tabla dimensiona producto
 
 SELECT
-    -- cojo todas las fechas o solo las de sales?
+    [Date],
     Anno,
     Annomes,
     Dia,
