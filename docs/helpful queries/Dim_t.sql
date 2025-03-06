@@ -1,3 +1,5 @@
+-- contruccion tabla dimensiona producto
+
 SELECT
     [Date],
     Anno,
