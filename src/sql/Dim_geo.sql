@@ -7,6 +7,7 @@ SELECT
     tienda.ZONA_ID,
     ZONA,
     TIENDA_DESC
+    
 FROM
     [DATAEX].[011_tienda] tienda
 LEFT JOIN 
