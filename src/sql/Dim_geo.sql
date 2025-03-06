@@ -11,6 +11,6 @@ SELECT
 FROM
     [DATAEX].[011_tienda] tienda
 LEFT JOIN 
-    [DATAEX].[012_provincia] provincia ON tienda.PROVINCIA_ID = provincia.PROVINCIA_ID
+    [DATAEX].[012_provincia] provincia ON CAST(tienda.PROVINCIA_ID AS INT) = CAST(provincia.PROVINCIA_ID AS INT)
 LEFT JOIN 
-    [DATAEX].[013_zona] zona ON tienda.ZONA_ID = zona.ZONA_ID 
+    [DATAEX].[013_zona] zona ON CAST(tienda.ZONA_ID AS INT) = CAST(zona.ZONA_ID AS INT) 
