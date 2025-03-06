@@ -15,19 +15,12 @@ SELECT
     [ENCUESTA_ZONA_CLIENTE_VENTA] INT,
     [ENCUESTA_CLIENTE_ZONA_TALLER] INT,
 
-    -- que es U2, Renta_Media, F2, Count?
-    [Renta_Media] INT,
-    -- hace falta A1, A2, A3, etc o solo con A sirve?
-
-    -- tampoco pondria las letras pq no aparecen en que letra estan 
-    -- o si si dps con la renta media lo clasificaremos
-    -- que son los campos A, B, C, D, E, F, G, H, I, J, K?
-    [A], [B], [C], [D], [E], [F], [G], [H], [I], [J], [K], [U2],
-    [A1]
+    [A] FLOAT, [B] FLOAT, [C] FLOAT, [D] FLOAT, [E] FLOAT, [F] FLOAT, [G] FLOAT, [H] FLOAT, [I] FLOAT, [J] FLOAT, [K] FLOAT, [U2] FLOAT,
+    [Max_Mosaic_G] TEXT, [Max_Mosaic2] FLOAT, [Renta_Media] INT, [F2] INT, [Mosaic_number] INT
 
 FROM
-    [DATAEX].[019_Mosaic] mosaic
+    [DATAEX].[003_clientes] cliente
+LEFT JOIN  
+    [DATAEX].[005_cp] cp ON cliente.CODIGO_POSTAL = cp.CP
 LEFT JOIN 
-    [DATAEX].[005_cp] cp ON cp.codigopostalid = mosaic.CP
-LEFT JOIN 
-    [DATAEX].[003_clientes] cliente ON cliente.CODIGO_POSTAL = cp.CP
+    [DATAEX].[019_mosaic] mosaic ON try_cast(cp.codigopostalid AS INT) = try_cast(mosaic.CP AS INT)
