@@ -27,8 +27,8 @@ SELECT
 FROM
     [DATAEX].[006_producto] producto
 LEFT JOIN 
-    [DATAEX].[007_costes] costes ON CAST(producto.Modelo AS TEXT) = CAST(costes.Modelo AS TEXT)
+    [DATAEX].[007_costes] costes ON producto.Modelo = costes.Modelo
 LEFT JOIN 
-    [DATAEX].[014_categoría_producto] categoria_producto ON CAST(producto.CATEGORIA_ID AS INT) = CAST(categoria_producto.CATEGORIA_ID AS INT)
+    [DATAEX].[014_categoría_producto] categoria_producto ON producto.CATEGORIA_ID = categoria_producto.CATEGORIA_ID
 LEFT JOIN 
-    [DATAEX].[015_fuel] fuel ON CAST(producto.Fuel_ID AS TEXT) = CAST(fuel.Fuel_ID AS TEXT)
+    [DATAEX].[015_fuel] fuel ON producto.Fuel_ID = fuel.Fuel_ID
