@@ -9,6 +9,8 @@ SELECT
     EXTENSION_GARANTIA,  
     EN_GARANTIA,  
 
+    Customer_ID,
+    
     -- 004: rev  
     ---- sales.CODE  
     DATE_UTIMA_REV,  
