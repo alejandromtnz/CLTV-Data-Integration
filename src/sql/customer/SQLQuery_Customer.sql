@@ -77,8 +77,38 @@ SELECT
 	-- lead_sum
     CAST((f.Fue_Lead + f.Lead_compra) AS INT) AS lead_sum,
 
-	-- Interacción PVP x Car_Age (añadido nuevo)
-    CAST(f.PVP * f.Car_Age AS FLOAT) AS PVP_x_Car_Age
+	-- Interacción PVP x Car_Age 
+    CAST(f.PVP * f.Car_Age AS FLOAT) AS PVP_x_Car_Age,
+
+	-- Número total de ventas por cliente (frecuencia de compra)
+	COUNT(f.CODE) OVER (PARTITION BY c.Customer_ID) AS num_ventas,
+
+	-- Precio medio de venta (gasto promedio)
+	AVG(f.PVP) OVER (PARTITION BY c.Customer_ID) AS pvp_medio,
+
+	-- Coste medio (para calcular margen bruto)
+	AVG(f.COSTE_VENTA_NO_IMPUESTOS) OVER (PARTITION BY c.Customer_ID) AS coste_medio,
+
+	-- Descuento medio aplicado (efectividad promociones)
+	AVG((f.PVP - f.COSTE_VENTA_NO_IMPUESTOS)/NULLIF(f.PVP, 0)) OVER (PARTITION BY c.Customer_ID) AS descuento_medio,
+
+	-- Total de revisiones en taller (fidelización postventa)
+	SUM(f.Revisiones) OVER (PARTITION BY c.Customer_ID) AS num_revisiones,
+
+	-- Número de quejas (indicador de satisfacción)
+	SUM(CASE WHEN f.QUEJA = 'SI' THEN 1 ELSE 0 END) OVER (PARTITION BY c.Customer_ID) AS num_quejas,
+
+	-- Días desde última compra (para reactivación)
+	DATEDIFF(day, MAX(f.Logistic_date) OVER (PARTITION BY c.Customer_ID), CURRENT_DATE) AS dias_ultima_compra,
+
+	-- Precio mínimo pagado (rango de gasto)
+	MIN(f.PVP) OVER (PARTITION BY c.Customer_ID) AS pvp_min,
+
+	-- Precio máximo pagado (gasto tope)
+	MAX(f.PVP) OVER (PARTITION BY c.Customer_ID) AS pvp_max,
+
+	-- Margen medio por cliente (rentabilidad)
+	AVG(f.Margen_eur) OVER (PARTITION BY c.Customer_ID) AS margen_medio
 
 FROM dbo.Dim_customer AS c
 LEFT JOIN dbo.Fact AS f
