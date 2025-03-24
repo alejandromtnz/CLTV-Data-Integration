@@ -9,7 +9,7 @@ DROP CONSTRAINT IF EXISTS PK_Fact;
 
 -- 3. Agregar CODE como Primary Key
 ALTER TABLE Fact  
-ADD CONSTRAINT PK_Fact PRIMARY KEY (CODE);
+ADD CONSTRAINT PK_Fact PRIMARYï¿½KEYï¿½(CODE);
 
 
 ---- PK de Dim_customer
@@ -23,7 +23,7 @@ DROP CONSTRAINT IF EXISTS PK_Dim_customer;
 
 -- 3. Agregar "Customer_ID" como Primary Key
 ALTER TABLE Dim_customer  
-ADD CONSTRAINT PK_Dim_customer PRIMARY KEY (Customer_ID);
+ADD CONSTRAINT PK_Dim_customer PRIMARYï¿½KEYï¿½(Customer_ID);
 
 
 ---- PK de Dim_geo
@@ -37,7 +37,7 @@ DROP CONSTRAINT IF EXISTS PK_Dim_geo;
 
 -- 3. Agregar "TIENDA_ID" como Primary Key
 ALTER TABLE Dim_geo  
-ADD CONSTRAINT PK_Dim_geo PRIMARY KEY (TIENDA_ID);
+ADD CONSTRAINT PK_Dim_geo PRIMARYï¿½KEYï¿½(TIENDA_ID);
 
 
 ---- PK de Dim_product
@@ -51,7 +51,7 @@ DROP CONSTRAINT IF EXISTS PK_Dim_product;
 
 -- 3. Agregar "Id_Producto" como Primary Key
 ALTER TABLE Dim_product  
-ADD CONSTRAINT PK_Dim_product PRIMARY KEY (Id_Producto);
+ADD CONSTRAINT PK_Dim_product PRIMARYï¿½KEYï¿½(Id_Producto);
 
 
 ---- PK de Dim_t
@@ -65,4 +65,4 @@ DROP CONSTRAINT IF EXISTS PK_Dim_t;
 
 -- 3. Agregar "Date" como Primary Key
 ALTER TABLE Dim_t  
-ADD CONSTRAINT PK_Dim_t PRIMARY KEY ([Date]);
+ADD CONSTRAINT PK_Dim_t PRIMARYï¿½KEYï¿½([Date]);
