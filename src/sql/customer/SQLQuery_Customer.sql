@@ -1,4 +1,3 @@
-
 SELECT
 	-- Trae todas las columnas de Dim_customer
     c.Customer_ID,
@@ -76,7 +75,10 @@ SELECT
     ) AS Margen_por_unidad,
 
 	-- lead_sum
-    CAST((f.Fue_Lead + f.Lead_compra) AS INT) AS lead_sum
+    CAST((f.Fue_Lead + f.Lead_compra) AS INT) AS lead_sum,
+
+	-- Interacción PVP x Car_Age (añadido nuevo)
+    CAST(f.PVP * f.Car_Age AS FLOAT) AS PVP_x_Car_Age
 
 FROM dbo.Dim_customer AS c
 LEFT JOIN dbo.Fact AS f
