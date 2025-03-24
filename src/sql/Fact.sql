@@ -55,9 +55,11 @@ SELECT
 
 
     -- fórmulas: producto y costes
-    ROUND(sales.PVP * (Margen)*0.01 * (1 - IMPUESTOS / 100), 2) AS Margen_eur_bruto,
-    ROUND(sales.PVP * (Margen)*0.01 * (1 - IMPUESTOS / 100) - sales.COSTE_VENTA_NO_IMPUESTOS - (Margendistribuidor*0.01 + GastosMarketing*0.01-Comisión_Marca*0.01) * sales.PVP * (1 - IMPUESTOS / 100) - Costetransporte, 2) AS Margen_eur,
-
+    CAST(ROUND(sales.PVP * (Margen)*0.01 * (1 - IMPUESTOS / 100), 2) AS FLOAT) AS Margen_eur_bruto,
+    CAST(ROUND(sales.PVP * (Margen)*0.01 * (1 - IMPUESTOS / 100) - sales.COSTE_VENTA_NO_IMPUESTOS - 
+         (Margendistribuidor*0.01 + GastosMarketing*0.01 - Comisión_Marca*0.01) * sales.PVP * (1 - IMPUESTOS / 100) - 
+         Costetransporte, 2) AS FLOAT) AS Margen_eur,
+         
     ---- charn
     CAST(
         CASE 
