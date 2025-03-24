@@ -1,3 +1,4 @@
+
 SELECT
 	-- Trae todas las columnas de Dim_customer
     c.Customer_ID,
