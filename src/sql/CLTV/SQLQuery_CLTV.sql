@@ -87,4 +87,4 @@ SELECT
 FROM
     RetencionClientes
 ORDER BY
-    CLTV_Acum_5Años DESC;
+    CLTV_Acum_5Años DESC
