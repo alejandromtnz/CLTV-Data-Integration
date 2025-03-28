@@ -23,25 +23,22 @@ WITH (
 -- Extraer el intercepto (beta0) y coeficientes necesarios
 DECLARE @beta0 FLOAT, @beta_PVP FLOAT, @beta_CarAge FLOAT;
 
-SELECT @beta0 = Coeficiente FROM #TempCoeficientes WHERE Variable = 'Intercepto';
-SELECT @beta_PVP = Coeficiente FROM #TempCoeficientes WHERE Variable = 'log_PVP';
-SELECT @beta_CarAge = Coeficiente FROM #TempCoeficientes WHERE Variable = 'sqrt_Car_Age';
+SELECT @beta0 = ISNULL(Coeficiente, 0) FROM #TempCoeficientes WHERE Variable = 'Intercepto';
+SELECT @beta_PVP = ISNULL(Coeficiente, 0) FROM #TempCoeficientes WHERE Variable = 'log_PVP';
+SELECT @beta_CarAge = ISNULL(Coeficiente, 0) FROM #TempCoeficientes WHERE Variable = 'sqrt_Car_Age';
 
--- Mostrar coeficientes clave (para verificación)
-SELECT 
-    @beta0 AS Intercepto,
-    @beta_PVP AS Coef_log_PVP,
-    @beta_CarAge AS Coef_sqrt_Car_Age;
-
--- Calcular probabilidad de retención para cada cliente
+-- Calcular probabilidad de retención para cada cliente (esta es la única consulta que devolverá resultados)
 WITH RetencionClientes AS (
     SELECT 
         f.Customer_ID,
         f.Margen_eur AS Margen,
-        -- Fórmula logística para retención
-        1 - (1 / (1 + EXP(-(@beta0 + 
-                           @beta_PVP * LOG(f.PVP) + 
-                           @beta_CarAge * SQRT(f.Car_Age))))) AS Retencion
+        -- Fórmula logística para retención con manejo de NULLs
+        CASE 
+            WHEN f.PVP IS NULL OR f.Car_Age IS NULL OR f.Margen_eur IS NULL THEN NULL
+            ELSE 1 - (1 / (1 + EXP(-(@beta0 + 
+                           @beta_PVP * LOG(NULLIF(f.PVP, 0)) + 
+                           @beta_CarAge * SQRT(NULLIF(f.Car_Age, 0))))))
+        END AS Retencion
     FROM 
         Fact f
     WHERE
@@ -55,36 +52,38 @@ SELECT
     Margen,
     Retencion,
     -- CLTV por año individual (opcional)
-    Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) AS CLTV_Año1,
-    Margen * (POWER(Retencion, 2)/POWER(1.07, 2)) AS CLTV_Año2,
-    Margen * (POWER(Retencion, 3)/POWER(1.07, 3)) AS CLTV_Año3,
-    Margen * (POWER(Retencion, 4)/POWER(1.07, 4)) AS CLTV_Año4,
-    Margen * (POWER(Retencion, 5)/POWER(1.07, 5)) AS CLTV_Año5,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) END AS CLTV_Año1,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (POWER(Retencion, 2)/POWER(1.07, 2)) END AS CLTV_Año2,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (POWER(Retencion, 3)/POWER(1.07, 3)) END AS CLTV_Año3,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (POWER(Retencion, 4)/POWER(1.07, 4)) END AS CLTV_Año4,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (POWER(Retencion, 5)/POWER(1.07, 5)) END AS CLTV_Año5,
     -- CLTV acumulado progresivo (mejor formato para análisis)
-    Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) AS CLTV_Acum_1Año,
-    Margen * (
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) END AS CLTV_Acum_1Año,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2)
-    ) AS CLTV_Acum_2Años,
-    Margen * (
+    ) END AS CLTV_Acum_2Años,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2) +
         POWER(Retencion, 3)/POWER(1.07, 3)
-    ) AS CLTV_Acum_3Años,
-    Margen * (
+    ) END AS CLTV_Acum_3Años,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2) +
         POWER(Retencion, 3)/POWER(1.07, 3) +
         POWER(Retencion, 4)/POWER(1.07, 4)
-    ) AS CLTV_Acum_4Años,
-    Margen * (
+    ) END AS CLTV_Acum_4Años,
+    CASE WHEN Retencion IS NULL THEN NULL ELSE Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2) +
         POWER(Retencion, 3)/POWER(1.07, 3) +
         POWER(Retencion, 4)/POWER(1.07, 4) +
         POWER(Retencion, 5)/POWER(1.07, 5)
-    ) AS CLTV_Acum_5Años
+    ) END AS CLTV_Acum_5Años
 FROM
     RetencionClientes
+WHERE
+    Retencion IS NOT NULL
 ORDER BY
-    CLTV_Acum_5Años DESC
+    CLTV_Acum_5Años DESC;
