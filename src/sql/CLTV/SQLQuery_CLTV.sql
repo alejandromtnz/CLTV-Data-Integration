@@ -16,7 +16,7 @@ WITH (
     FORMAT = 'CSV',
     FIRSTROW = 2,            -- Ignorar encabezados
     FIELDTERMINATOR = ',',   -- Columnas separadas por coma
-    ROWTERMINATOR = '\n',    -- Filas separadas por salto de línea
+    ROWTERMINATOR = '\n',    -- Filas separadas por salto de lï¿½nea
     TABLOCK
 );
 
@@ -27,18 +27,18 @@ SELECT @beta0 = Coeficiente FROM #TempCoeficientes WHERE Variable = 'Intercepto'
 SELECT @beta_PVP = Coeficiente FROM #TempCoeficientes WHERE Variable = 'log_PVP';
 SELECT @beta_CarAge = Coeficiente FROM #TempCoeficientes WHERE Variable = 'sqrt_Car_Age';
 
--- Mostrar coeficientes clave (para verificación)
+-- Mostrar coeficientes clave (para verificaciï¿½n)
 SELECT 
     @beta0 AS Intercepto,
     @beta_PVP AS Coef_log_PVP,
     @beta_CarAge AS Coef_sqrt_Car_Age;
 
--- Calcular probabilidad de retención para cada cliente
+-- Calcular probabilidad de retenciï¿½n para cada cliente
 WITH RetencionClientes AS (
     SELECT 
         f.Customer_ID,
         f.Margen_eur AS Margen,
-        -- Fórmula logística para retención
+        -- Fï¿½rmula logï¿½stica para retenciï¿½n
         1 - (1 / (1 + EXP(-(@beta0 + 
                            @beta_PVP * LOG(f.PVP) + 
                            @beta_CarAge * SQRT(f.Car_Age))))) AS Retencion
@@ -54,37 +54,37 @@ SELECT
     Customer_ID,
     Margen,
     Retencion,
-    -- CLTV por año individual (opcional)
-    Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) AS CLTV_Año1,
-    Margen * (POWER(Retencion, 2)/POWER(1.07, 2)) AS CLTV_Año2,
-    Margen * (POWER(Retencion, 3)/POWER(1.07, 3)) AS CLTV_Año3,
-    Margen * (POWER(Retencion, 4)/POWER(1.07, 4)) AS CLTV_Año4,
-    Margen * (POWER(Retencion, 5)/POWER(1.07, 5)) AS CLTV_Año5,
-    -- CLTV acumulado progresivo (mejor formato para análisis)
-    Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) AS CLTV_Acum_1Año,
+    -- CLTV por aï¿½o individual (opcional)
+    Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) AS CLTV_Aï¿½o1,
+    Margen * (POWER(Retencion, 2)/POWER(1.07, 2)) AS CLTV_Aï¿½o2,
+    Margen * (POWER(Retencion, 3)/POWER(1.07, 3)) AS CLTV_Aï¿½o3,
+    Margen * (POWER(Retencion, 4)/POWER(1.07, 4)) AS CLTV_Aï¿½o4,
+    Margen * (POWER(Retencion, 5)/POWER(1.07, 5)) AS CLTV_Aï¿½o5,
+    -- CLTV acumulado progresivo (mejor formato para anï¿½lisis)
+    Margen * (POWER(Retencion, 1)/POWER(1.07, 1)) AS CLTV_Acum_1Aï¿½o,
     Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2)
-    ) AS CLTV_Acum_2Años,
+    ) AS CLTV_Acum_2Aï¿½os,
     Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2) +
         POWER(Retencion, 3)/POWER(1.07, 3)
-    ) AS CLTV_Acum_3Años,
+    ) AS CLTV_Acum_3Aï¿½os,
     Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2) +
         POWER(Retencion, 3)/POWER(1.07, 3) +
         POWER(Retencion, 4)/POWER(1.07, 4)
-    ) AS CLTV_Acum_4Años,
+    ) AS CLTV_Acum_4Aï¿½os,
     Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
         POWER(Retencion, 2)/POWER(1.07, 2) +
         POWER(Retencion, 3)/POWER(1.07, 3) +
         POWER(Retencion, 4)/POWER(1.07, 4) +
         POWER(Retencion, 5)/POWER(1.07, 5)
-    ) AS CLTV_Acum_5Años
+    ) AS CLTV_Acum_5Aï¿½os
 FROM
     RetencionClientes
 ORDER BY
-    CLTV_Acum_5Años DESC
+    CLTV_Acum_5Aï¿½os DESC
