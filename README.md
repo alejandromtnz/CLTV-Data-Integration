@@ -2,7 +2,7 @@
 
 **Autor:** Alejandro Martínez Ronda  
 **Repositorio:**  
-- **Usuario GitHub:** alejandru00  
+- **Usuario GitHub:** alejandromtnz
 - **Link repositorio:** [GitHub](https://github.com/alejandromtnz/CLTV-Data-Integration.git)
 
 ------
