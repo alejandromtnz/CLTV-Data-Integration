@@ -1,41 +1,39 @@
--- =============================================
--- PRIMERA CTE: C�lculo de m�tricas agregadas por cliente
--- Optimiza el rendimiento al pre-calcular valores
--- =============================================
+
+-- Cálculo de métricas agregadas por cliente
 WITH CustomerAggregates AS (
     SELECT 
         Customer_ID,
-        -- N�mero total de ventas por cliente (frecuencia de compra)
+        -- Número total de ventas por cliente (frecuencia de compra)
         COUNT(CODE) AS num_ventas,
         
         -- Precio medio de venta (gasto promedio del cliente)
         AVG(CAST(PVP AS DECIMAL(10,2))) AS pvp_medio,
         
-        -- Coste medio (para an�lisis de margen bruto)
+        -- Coste medio (para análisis de margen bruto)
         AVG(CAST(COSTE_VENTA_NO_IMPUESTOS AS DECIMAL(10,2))) AS coste_medio,
         
         -- Descuento medio aplicado (efectividad de promociones)
         AVG(CASE 
-                WHEN PVP = 0 THEN NULL  -- Evita divisi�n por cero
+                WHEN PVP = 0 THEN NULL  -- Evita división por cero
                 ELSE CAST((PVP - COSTE_VENTA_NO_IMPUESTOS) AS DECIMAL(10,2)) / CAST(PVP AS DECIMAL(10,2))
             END) AS descuento_medio,
         
-        -- Total de revisiones en taller (indicador de fidelizaci�n)
+        -- Total de revisiones en taller (indicador de fidelización)
         SUM(Revisiones) AS num_revisiones,
         
-        -- N�mero de quejas (medida de satisfacci�n del cliente)
+        -- Número de quejas (medida de satisfacción del cliente)
         SUM(CASE WHEN QUEJA = 'SI' THEN 1 ELSE 0 END) AS num_quejas,
         
-        -- �ltima fecha de compra v�lida (para c�lculo de inactividad)
+        -- Última fecha de compra v�lida (para cálculo de inactividad)
         MAX(CASE 
                 WHEN ISDATE(Logistic_date) = 1 THEN CAST(Logistic_date AS DATETIME)
                 ELSE NULL  -- Ignora fechas mal formateadas
             END) AS ultima_fecha_compra,
         
-        -- Precio m�nimo pagado (rango inferior de gasto del cliente)
+        -- Precio mínimo pagado (rango inferior de gasto del cliente)
         MIN(CAST(PVP AS DECIMAL(10,2))) AS pvp_min,
         
-        -- Precio m�ximo pagado (rango superior de gasto del cliente)
+        -- Precio máximo pagado (rango superior de gasto del cliente)
         MAX(CAST(PVP AS DECIMAL(10,2))) AS pvp_max,
         
         -- Margen medio por cliente (rentabilidad)
@@ -44,13 +42,11 @@ WITH CustomerAggregates AS (
     GROUP BY Customer_ID
 ),
 
--- =============================================
--- SEGUNDA CTE: Limpieza de fechas problem�ticas
--- =============================================
+-- Limpieza de fechas problemáticas
 FechasLimpias AS (
     SELECT 
         Customer_ID,
-        -- Convierte solo fechas v�lidas, descarta el resto
+        -- Convierte solo fechas válidas, descarta el resto
         CASE 
             WHEN ISDATE(Logistic_date) = 1 THEN CAST(Logistic_date AS DATETIME)
             ELSE NULL
@@ -58,11 +54,9 @@ FechasLimpias AS (
     FROM dbo.Fact
 )
 
--- =============================================
--- CONSULTA PRINCIPAL: Combina datos de dimensiones, hechos y m�tricas calculadas
--- =============================================
+-- Combina datos de dimensiones, hechos y métricas calculadas
 SELECT
-    -- Columnas de dimensi�n clientes (Dim_customer)
+    -- Columnas de dimensión clientes (Dim_customer)
     c.Customer_ID,
     c.Edad,
     c.Fecha_nacimiento,
@@ -129,30 +123,25 @@ SELECT
     f.Margen_eur,
     f.CHARN,
 
-    -- =============================================
-    -- M�TRICAS CALCULADAS
-    -- =============================================
-    
+    -- MÉTRICAS CALCULADAS
     -- Margen por unidad 
     CAST(
         CASE 
             WHEN f.PVP = 0 THEN NULL  -- Caso especial para PVP cero
-            ELSE f.Margen_eur / ISNULL(NULLIF(f.PVP, 0), 1)  -- ISNULL protege contra divisi�n por cero
-        END AS DECIMAL(10,4)  -- Precisi�n de 4 decimales para porcentajes
+            ELSE f.Margen_eur / ISNULL(NULLIF(f.PVP, 0), 1)  -- ISNULL protege contra división por cero
+        END AS DECIMAL(10,4)  -- Precisión de 4 decimales para porcentajes
     ) AS Margen_por_unidad,
 
     -- Suma de leads 
     CAST((f.Fue_Lead + f.Lead_compra) AS INT) AS lead_sum,
 
-    -- Interacci�n entre precio y antig�edad del veh�culo
+    -- Interacci�n entre precio y antigüedad del vehículo
     CAST(f.PVP * f.Car_Age AS DECIMAL(10,2)) AS PVP_x_Car_Age,
 
 
-    -- =============================================
-    -- M�TRICAS PRECALCULADAS (desde las CTEs)
-    -- =============================================
+    -- MÉTRICAS PRECALCULADAS (desde las CTEs)
     
-    -- N�mero total de ventas del cliente
+    -- Número total de ventas del cliente
     agg.num_ventas,
     
     -- Precio medio de compra
@@ -164,19 +153,19 @@ SELECT
     -- Descuento medio aplicado
     agg.descuento_medio,
     
-    -- Visitas al taller (fidelizaci�n postventa)
+    -- Visitas al taller (fidelización postventa)
     agg.num_revisiones,
     
-    -- Quejas registradas (indicador de satisfacci�n)
+    -- Quejas registradas (indicador de satisfacción)
     agg.num_quejas,
     
-    -- D�as desde la �ltima compra (para campa�as de reactivaci�n)
+    -- Días desde la última compra (para campañas de reactivación)
     DATEDIFF(day, agg.ultima_fecha_compra, GETDATE()) AS dias_ultima_compra,
     
-    -- Precio m�nimo pagado por el cliente
+    -- Precio mínimo pagado por el cliente
     agg.pvp_min,
     
-    -- Precio m�ximo pagado por el cliente
+    -- Precio máximo pagado por el cliente
     agg.pvp_max,
     
     -- Margen medio generado por este cliente
