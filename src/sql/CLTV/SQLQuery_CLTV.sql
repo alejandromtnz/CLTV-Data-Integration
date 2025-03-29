@@ -29,13 +29,13 @@ SELECT
     Customer_ID,
     Margen,
     Retencion,
-    -- CLTV por año individual (opcional)
+    -- CLTV por año individual
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (POWER(Retencion, 1)/POWER(1.07, 1)), 2) END AS CLTV_Año1,
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (POWER(Retencion, 2)/POWER(1.07, 2)), 2) END AS CLTV_Año2,
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (POWER(Retencion, 3)/POWER(1.07, 3)), 2) END AS CLTV_Año3,
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (POWER(Retencion, 4)/POWER(1.07, 4)), 2) END AS CLTV_Año4,
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (POWER(Retencion, 5)/POWER(1.07, 5)), 2) END AS CLTV_Año5,
-    -- CLTV acumulado progresivo (mejor formato para análisis)
+    -- CLTV acumulado progresivo
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (POWER(Retencion, 1)/POWER(1.07, 1)), 2) END AS CLTV_Acum_1Año,
     CASE WHEN Retencion IS NULL THEN NULL ELSE ROUND(Margen * (
         POWER(Retencion, 1)/POWER(1.07, 1) +
