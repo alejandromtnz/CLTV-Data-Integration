@@ -1,4 +1,4 @@
--- contruccion tabla dimensiona producto
+-- contruccion tabla dimensiona Tiempo
 
 SELECT
     [Date],

@@ -1,3 +1,5 @@
+-- contruccion tabla dimensiona Customer
+
 SELECT
     CAST([Customer_ID] AS INT) AS Customer_ID,
     CAST([Edad] AS INT) AS Edad,

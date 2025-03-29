@@ -1,4 +1,4 @@
--- contruccion tabla dimensiona producto
+-- contruccion tabla dimensiona Producto
 
 SELECT 
     -- 006: producto (costes + categoria_producto + fuel)

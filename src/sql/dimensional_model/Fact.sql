@@ -1,3 +1,5 @@
+-- contruccion tabla Fact
+
 SELECT  
     sales.CODE,  
     CAST(PVP AS FLOAT) AS PVP,  

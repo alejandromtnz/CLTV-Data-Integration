@@ -1,4 +1,4 @@
--- contruccion tabla dimensiona GEO
+-- contruccion tabla dimensiona Geo
 
 SELECT 
     TIENDA_ID,
