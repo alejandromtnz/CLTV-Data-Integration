@@ -7,7 +7,7 @@
 
 ------
 
-**Análisis del Customer Lifetime Value**  
+### **Análisis del Customer Lifetime Value**  
 Este repositorio contiene la integración de datos y modelado del CLTV (Customer Lifetime Value), incluyendo ETL, modelado predictivo y visualización.
 
 ## **Descripción**
